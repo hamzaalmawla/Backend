@@ -8,6 +8,7 @@ Flask-based REST API for Library Management System.
 Key Requirements Implemented
 
 ✅ User Roles: Admin and Member with role-based access control
+
 ✅ Book Management: CRUD operations with categories
 ✅ User Management: Registration, authentication, profile management
 ✅ Search Functionality: Search books by title, author, ISBN, category
