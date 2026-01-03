@@ -4,7 +4,6 @@ Flask-based REST API for Library Management System.
 
 ## Features
 
-![Uploading image.png…]()
 
 Key Requirements Implemented
 
