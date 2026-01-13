@@ -305,6 +305,46 @@ def toggle_user_status(user_id):
         return jsonify({'error': str(e)}), 500
 
 
+@users_bp.route('/<int:user_id>', methods=['DELETE'])
+@jwt_required()
+def delete_user(user_id):
+    """
+    Delete user (Admin only)
+    
+    Parameters:
+        user_id: User ID
+    
+    Returns:
+        200: User deleted
+        400: Cannot delete admin or user with active loans
+        403: Admin access required
+        404: User not found
+    """
+    try:
+        if not is_admin():
+            return jsonify({'error': 'Admin access required'}), 403
+        
+        user = User.query.get_or_404(user_id)
+        
+        # Cannot delete admin users
+        if user.role == 'admin':
+            return jsonify({'error': 'Cannot delete admin users'}), 400
+        
+        # Check if user has active loans
+        active_loans = Loan.query.filter_by(user_id=user_id, status='active').count()
+        if active_loans > 0:
+            return jsonify({'error': 'Cannot delete user with active loans'}), 400
+        
+        db.session.delete(user)
+        db.session.commit()
+        
+        return jsonify({'message': 'User deleted successfully'}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
 # ============= REPORTS ROUTES =============
 
 @users_bp.route('/reports/usage', methods=['GET'])
